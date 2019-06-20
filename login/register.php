@@ -9,8 +9,11 @@ $username_err = $password_err = $confirm_password_err = "";
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  
+    $user = htmlspecialchars($_POST['username'], ENT_QUOTES);
+    $user = trim(preg_replace('/\s\s+/', ' ', $user));
+
     // Validate username
-    if(empty(trim($_POST["username"]))){
+    if(empty($user)){
         $username_err = "Bitte Benutzername eingeben.";
     } else{
         // Prepare a select statement
@@ -21,7 +24,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $stmt->bind_param("s", $param_username);
             
             // Set parameters
-            $param_username = trim($_POST["username"]);
+            $param_username = $user;
             
             // Attempt to execute the prepared statement
             if($stmt->execute()){
@@ -31,7 +34,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 if($stmt->num_rows == 1){
                     $username_err = "Benutzername nicht verfügbar.";
                 } else{
-                    $username = trim($_POST["username"]);
+                    $username = $user;
                 }
             } else{
                 echo "Oops! Irgendwas ist schief gelaufen.";
@@ -41,21 +44,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $stmt->close();
         }
     }
+
+    $pass = htmlspecialchars($_POST['password'], ENT_QUOTES);
+    $pass = trim(preg_replace('/\s\s+/', ' ', $pass));
     
     // Validate password
-    if(empty(trim($_POST["password"]))){
+    if(empty($pass)){
         $password_err = "Bitte Passwort eingeben.";     
-    } elseif(strlen(trim($_POST["password"])) < 6){
+    } elseif(strlen($pass) < 6){
         $password_err = "Passwort muss mindestens 6 Zeichen haben.";
     } else{
-        $password = trim($_POST["password"]);
+        $password = $pass;
     }
+
+    $passconfirm = htmlspecialchars($_POST['confirm_password'], ENT_QUOTES);
+    $passconfirm = trim(preg_replace('/\s\s+/', ' ', $passconfirm));
     
     // Validate confirm password
-    if(empty(trim($_POST["confirm_password"]))){
+    if(empty($passconfirm)){
         $confirm_password_err = "Passwort bestätigen.";     
     } else{
-        $confirm_password = trim($_POST["confirm_password"]);
+        $confirm_password = $passconfirm;
         if(empty($password_err) && ($password != $confirm_password)){
             $confirm_password_err = "Passwort stimmt nicht überein.";
         }

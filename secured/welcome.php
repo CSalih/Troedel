@@ -22,10 +22,11 @@ function post() {
 
         //new post created
     //encode special chars to avoid injection
-    $jodel = htmlspecialchars($_POST['jodel'], ENT_QUOTES);
+    $jodel = htmlspecialchars($_POST['jodel'], ENT_QUOTES);                        
     $jodel = trim(preg_replace('/\s\s+/', ' ', $jodel));
 
     if (strlen($jodel) < 1) {
+        $err_to_long = "Text ist zu kurz";
         return;
     }
 
@@ -227,7 +228,8 @@ function getJodelText($id) {
                 }
             }
             $stmt->close();
-            return $res;
+            
+            return htmlspecialchars($res);
         }
     }
     return "err";
@@ -293,7 +295,7 @@ include '../includes/navbar.php';
 <form id="editField" action="?edit=0" class="modal" method="POST">
     <div class="modal-content">
     <label for="jodelText"><b>Trödl</b></label>
-        <input id="jodelText" type="text" value="<?php echo $jodelText; ?>" name="jodelText" required="true">
+        <input id="jodelText" type="text" value="<?php echo htmlspecialchars($jodelText); ?>" name="jodelText" required="true">
     </div>
 
     <div class="modal-footer">
@@ -312,7 +314,7 @@ include '../includes/navbar.php';
                         <div class="card-content">
                             <i class="material-icons prefix">account_circle</i>
                             <span class="title">'.$row["create_user"].'</span>
-                            <p><br>' .$row["text"]. '</p>
+                            <p><br>' . $row["text"] . '</p>
                         </div>
                         <div class="card-action center">
                             <a href="#">Bewertung ' .$row["rating"]. '</a>
