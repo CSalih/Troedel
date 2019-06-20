@@ -1,4 +1,5 @@
 # Troedel
+This is my Homework for a University Lecture
 
 # Installation
 
